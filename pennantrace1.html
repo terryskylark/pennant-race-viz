@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <style>
+            body {
+              font: 10px sans-serif;
+            }
+            .axis path,
+            .axis line {
+              fill: none;
+              stroke: #000;
+              shape-rendering: crispEdges;
+            }
+            .x.axis path {
+              /*display: none;*/
+            }
+            .line {
+              fill: none;
+              stroke: steelblue;
+              stroke-width: 1.5px;
+            }
+        </style>
+
+        <title>Tyler Call - visualizing pennant race excitement</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="././css/bootstrap.css">
+        <link rel="stylesheet" href="./css/main.css">
+        <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:400,600' rel='stylesheet' type='text/css'>
+        <script src="./js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+    </head>
+    <body>
+
+    </body>
+
+    <script src="js/vendor/d3.js"></script>
+
+    <script>
+        var margin = {top: 75, right: 75, bottom: 75, left: 75},
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+        var parseDate = d3.time.format("%A %b %e %Y").parse;
+
+        var x = d3.time.scale()
+            .range([0, width]);
+
+        var y = d3.scale.linear()
+            .range([height, 0]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+        var color = d3.scale.category10();
+
+        var line = d3.svg.line()
+            .x(function(d) { return x(d.date); })
+            .y(function(d) { return y(d.gamesAboveOrBelow500); });
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        data =  {
+                    "year": "2014",
+                    "team": "BOS",
+                    "games":[
+                        {"date": "Monday Mar 31 2014", "outcome": "L", "gamesAboveOrBelow500": -1, "gameNumber": "1"},
+                        {"date": "Wednesday Apr 2 2014", "outcome": "W", "gamesAboveOrBelow500": 0, "gameNumber": "2"},
+                        {"date": "Thursday Apr 3 2014", "outcome": "W", "gamesAboveOrBelow500": 1, "gameNumber": "3"},
+                        {"date": "Friday Apr 4 2014", "outcome": "L", "gamesAboveOrBelow500": 0, "gameNumber": "4"},
+                        {"date": "Saturday Apr 5 2014", "outcome": "L", "gamesAboveOrBelow500": -1, "gameNumber": "5"},
+                        {"date": "Sunday Apr 6 2014", "outcome": "L", "gamesAboveOrBelow500": -2, "gameNumber": "6"},
+                        {"date": "Monday Apr 7 2014", "outcome": "W", "gamesAboveOrBelow500": -1, "gameNumber": "7"},
+                        {"date": "Tuesday Apr 8 2014", "outcome": "L", "gamesAboveOrBelow500": -2, "gameNumber": "8"},
+                        {"date": "Wednesday Apr 9 2014", "outcome": "W", "gamesAboveOrBelow500": -1, "gameNumber": "9"},
+                        {"date": "Thursday Apr 10 2014", "outcome": "L", "gamesAboveOrBelow500": -2, "gameNumber": "10"},
+                        {"date": "Friday Apr 11 2014", "outcome": "W", "gamesAboveOrBelow500": -1, "gameNumber": "11"},
+                        {"date": "Saturday Apr 12 2014", "outcome": "L", "gamesAboveOrBelow500": -2, "gameNumber": "12"},
+                        {"date": "Sunday Apr 13 2014", "outcome": "L", "gamesAboveOrBelow500": -3, "gameNumber": "13"},
+                        {"date": "Tuesday Apr 15 2014", "outcome": "L-wo", "gamesAboveOrBelow500": -4, "gameNumber": "14"},
+                        {"date": "Wednesday Apr 16 2014", "outcome": "W", "gamesAboveOrBelow500": -3, "gameNumber": "15"},
+                        {"date": "Thursday Apr 17 2014", "outcome": "W", "gamesAboveOrBelow500": -2, "gameNumber": "16"},
+                        {"date": "Friday Apr 18 2014", "outcome": "L", "gamesAboveOrBelow500": -3, "gameNumber": "17"},
+                        {"date": "Saturday Apr 19 2014", "outcome": "W", "gamesAboveOrBelow500": -2, "gameNumber": "18"},
+                        {"date": "Sunday Apr 20 2014", "outcome": "W-wo", "gamesAboveOrBelow500": -1, "gameNumber": "19"},
+                        {"date": "Monday Apr 21 2014", "outcome": "L", "gamesAboveOrBelow500": -2, "gameNumber": "20"},
+                        {"date": "Tuesday Apr 22 2014", "outcome": "L", "gamesAboveOrBelow500": -3, "gameNumber": "21"},
+                        {"date": "Wednesday Apr 23 2014", "outcome": "W", "gamesAboveOrBelow500": -2, "gameNumber": "22"},
+                        {"date": "Thursday Apr 24 2014", "outcome": "L", "gamesAboveOrBelow500": -3, "gameNumber": "23"},
+                        {"date": "Friday Apr 25 2014", "outcome": "W", "gamesAboveOrBelow500": -2, "gameNumber": "24"},
+                        {"date": "Saturday Apr 26 2014", "outcome": "W", "gamesAboveOrBelow500": -1, "gameNumber": "25"},
+                        {"date": "Sunday Apr 27 2014", "outcome": "L", "gamesAboveOrBelow500": -2, "gameNumber": "26"},
+                        {"date": "Tuesday Apr 29 2014", "outcome": "W", "gamesAboveOrBelow500": -1, "gameNumber": "27"},
+                        {"date": "Thursday May 1 2014", "outcome": "L", "gamesAboveOrBelow500": -2, "gameNumber": "28"},
+                        {"date": "Thursday May 1 2014", "outcome": "L", "gamesAboveOrBelow500": -3, "gameNumber": "29"},
+                        {"date": "Friday May 2 2014", "outcome": "W", "gamesAboveOrBelow500": -2, "gameNumber": "30"},
+                        {"date": "Saturday May 3 2014", "outcome": "W", "gamesAboveOrBelow500": -1, "gameNumber": "31"},
+                        {"date": "Sunday May 4 2014", "outcome": "L", "gamesAboveOrBelow500": -2, "gameNumber": "32"},
+                        {"date": "Tuesday May 6 2014", "outcome": "W-wo", "gamesAboveOrBelow500": -1, "gameNumber": "33"},
+                        {"date": "Wednesday May 7 2014", "outcome": "W", "gamesAboveOrBelow500": 0, "gameNumber": "34"},
+                        {"date": "Friday May 9 2014", "outcome": "L", "gamesAboveOrBelow500": -1, "gameNumber": "35"},
+                        {"date": "Saturday May 10 2014", "outcome": "W", "gamesAboveOrBelow500": 0, "gameNumber": "36"},
+                        {"date": "Sunday May 11 2014", "outcome": "W", "gamesAboveOrBelow500": 1, "gameNumber": "37"},
+                        {"date": "Tuesday May 13 2014", "outcome": "L-wo", "gamesAboveOrBelow500": 0, "gameNumber": "38"},
+                        {"date": "Wednesday May 14 2014", "outcome": "W", "gamesAboveOrBelow500": 1, "gameNumber": "39"},
+                        {"date": "Thursday May 15 2014", "outcome": "L-wo", "gamesAboveOrBelow500": 0, "gameNumber": "40"},
+                        {"date": "Friday May 16 2014", "outcome": "L", "gamesAboveOrBelow500": -1, "gameNumber": "41"},
+                        {"date": "Saturday May 17 2014", "outcome": "L", "gamesAboveOrBelow500": -2, "gameNumber": "42"},
+                        {"date": "Sunday May 18 2014", "outcome": "L", "gamesAboveOrBelow500": -3, "gameNumber": "43"},
+                        {"date": "Tuesday May 20 2014", "outcome": "L", "gamesAboveOrBelow500": -4, "gameNumber": "44"},
+                        {"date": "Wednesday May 21 2014", "outcome": "L", "gamesAboveOrBelow500": -5, "gameNumber": "45"},
+                        {"date": "Thursday May 22 2014", "outcome": "L", "gamesAboveOrBelow500": -6, "gameNumber": "46"},
+                        {"date": "Friday May 23 2014", "outcome": "L-wo", "gamesAboveOrBelow500": -7, "gameNumber": "47"},
+                        {"date": "Saturday May 24 2014", "outcome": "L-wo", "gamesAboveOrBelow500": -8, "gameNumber": "48"},
+                        {"date": "Sunday May 25 2014", "outcome": "L", "gamesAboveOrBelow500": -9, "gameNumber": "49"},
+                        {"date": "Monday May 26 2014", "outcome": "W", "gamesAboveOrBelow500": -8, "gameNumber": "50"},
+                        {"date": "Tuesday May 27 2014", "outcome": "W", "gamesAboveOrBelow500": -7, "gameNumber": "51"},
+                        {"date": "Wednesday May 28 2014", "outcome": "W", "gamesAboveOrBelow500": -6, "gameNumber": "52"},
+                        {"date": "Thursday May 29 2014", "outcome": "W-wo", "gamesAboveOrBelow500": -5, "gameNumber": "53"},
+                        {"date": "Friday May 30 2014", "outcome": "W-wo", "gamesAboveOrBelow500": -4, "gameNumber": "54"},
+                        {"date": "Saturday May 31 2014", "outcome": "W", "gamesAboveOrBelow500": -3, "gameNumber": "55"},
+                        {"date": "Sunday Jun 1 2014", "outcome": "W", "gamesAboveOrBelow500": -2, "gameNumber": "56"},
+                        {"date": "Monday Jun 2 2014", "outcome": "L", "gamesAboveOrBelow500": -3, "gameNumber": "57"},
+                        {"date": "Tuesday Jun 3 2014", "outcome": "L", "gamesAboveOrBelow500": -4, "gameNumber": "58"},
+                        {"date": "Wednesday Jun 4 2014", "outcome": "L-wo", "gamesAboveOrBelow500": -5, "gameNumber": "59"},
+                        {"date": "Friday Jun 6 2014", "outcome": "L", "gamesAboveOrBelow500": -6, "gameNumber": "60"},
+                        {"date": "Saturday Jun 7 2014", "outcome": "L", "gamesAboveOrBelow500": -7, "gameNumber": "61"},
+                        {"date": "Sunday Jun 8 2014", "outcome": "W", "gamesAboveOrBelow500": -6, "gameNumber": "62"},
+                        {"date": "Monday Jun 9 2014", "outcome": "L", "gamesAboveOrBelow500": -7, "gameNumber": "63"},
+                        {"date": "Tuesday Jun 10 2014", "outcome": "W", "gamesAboveOrBelow500": -6, "gameNumber": "64"},
+                        {"date": "Wednesday Jun 11 2014", "outcome": "L", "gamesAboveOrBelow500": -7, "gameNumber": "65"},
+                        {"date": "Thursday Jun 12 2014", "outcome": "W", "gamesAboveOrBelow500": -6, "gameNumber": "66"},
+                        {"date": "Friday Jun 13 2014", "outcome": "W", "gamesAboveOrBelow500": -5, "gameNumber": "67"},
+                        {"date": "Saturday Jun 14 2014", "outcome": "L", "gamesAboveOrBelow500": -6, "gameNumber": "68"},
+                        {"date": "Sunday Jun 15 2014", "outcome": "L", "gamesAboveOrBelow500": -7, "gameNumber": "69"},
+                        {"date": "Monday Jun 16 2014", "outcome": "W", "gamesAboveOrBelow500": -6, "gameNumber": "70"},
+                        {"date": "Tuesday Jun 17 2014", "outcome": "W", "gamesAboveOrBelow500": -5, "gameNumber": "71"},
+                        {"date": "Wednesday Jun 18 2014", "outcome": "W-wo", "gamesAboveOrBelow500": -4, "gameNumber": "72"},
+                        {"date": "Thursday Jun 19 2014", "outcome": "L", "gamesAboveOrBelow500": -5, "gameNumber": "73"},
+                        {"date": "Friday Jun 20 2014", "outcome": "L", "gamesAboveOrBelow500": -6, "gameNumber": "74"},
+                        {"date": "Saturday Jun 21 2014", "outcome": "L-wo", "gamesAboveOrBelow500": -7, "gameNumber": "75"},
+                        {"date": "Sunday Jun 22 2014", "outcome": "W", "gamesAboveOrBelow500": -6, "gameNumber": "76"},
+                        {"date": "Monday Jun 23 2014", "outcome": "L", "gamesAboveOrBelow500": -7, "gameNumber": "77"},
+                        {"date": "Tuesday Jun 24 2014", "outcome": "L", "gamesAboveOrBelow500": -8, "gameNumber": "78"},
+                        {"date": "Wednesday Jun 25 2014", "outcome": "W", "gamesAboveOrBelow500": -7, "gameNumber": "79"},
+                        {"date": "Friday Jun 27 2014", "outcome": "L", "gamesAboveOrBelow500": -8, "gameNumber": "80"},
+                        {"date": "Saturday Jun 28 2014", "outcome": "W", "gamesAboveOrBelow500": -7, "gameNumber": "81"},
+                        {"date": "Sunday Jun 29 2014", "outcome": "W", "gamesAboveOrBelow500": -6, "gameNumber": "82"},
+                        {"date": "Monday Jun 30 2014", "outcome": "L", "gamesAboveOrBelow500": -7, "gameNumber": "83"},
+                        {"date": "Tuesday Jul 1 2014", "outcome": "L", "gamesAboveOrBelow500": -8, "gameNumber": "84"},
+                        {"date": "Wednesday Jul 2 2014", "outcome": "L", "gamesAboveOrBelow500": -9, "gameNumber": "85"},
+                        {"date": "Saturday Jul 5 2014", "outcome": "W-wo", "gamesAboveOrBelow500": -8, "gameNumber": "86"},
+                        {"date": "Saturday Jul 5 2014", "outcome": "L", "gamesAboveOrBelow500": -9, "gameNumber": "87"},
+                        {"date": "Sunday Jul 6 2014", "outcome": "L", "gamesAboveOrBelow500": -10, "gameNumber": "88"},
+                        {"date": "Monday Jul 7 2014", "outcome": "L", "gamesAboveOrBelow500": -11, "gameNumber": "89"},
+                        {"date": "Tuesday Jul 8 2014", "outcome": "L", "gamesAboveOrBelow500": -12, "gameNumber": "90"},
+                        {"date": "Wednesday Jul 9 2014", "outcome": "W-wo", "gamesAboveOrBelow500": -11, "gameNumber": "91"},
+                        {"date": "Thursday Jul 10 2014", "outcome": "W-wo", "gamesAboveOrBelow500": -10, "gameNumber": "92"},
+                        {"date": "Friday Jul 11 2014", "outcome": "W", "gamesAboveOrBelow500": -9, "gameNumber": "93"},
+                        {"date": "Saturday Jul 12 2014", "outcome": "L", "gamesAboveOrBelow500": -10, "gameNumber": "94"},
+                        {"date": "Sunday Jul 13 2014", "outcome": "W", "gamesAboveOrBelow500": -9, "gameNumber": "95"},
+                        {"date": "Friday Jul 18 2014", "outcome": "W", "gamesAboveOrBelow500": -8, "gameNumber": "96"},
+                        {"date": "Saturday Jul 19 2014", "outcome": "W", "gamesAboveOrBelow500": -7, "gameNumber": "97"},
+                        {"date": "Sunday Jul 20 2014", "outcome": "W", "gamesAboveOrBelow500": -6, "gameNumber": "98"},
+                        {"date": "Monday Jul 21 2014", "outcome": "W", "gamesAboveOrBelow500": -5, "gameNumber": "99"},
+                        {"date": "Tuesday Jul 22 2014", "outcome": "L", "gamesAboveOrBelow500": -6, "gameNumber": "100"},
+                        {"date": "Wednesday Jul 23 2014", "outcome": "L", "gamesAboveOrBelow500": -7, "gameNumber": "101"},
+                        {"date": "Thursday Jul 24 2014", "outcome": "L", "gamesAboveOrBelow500": -8, "gameNumber": "102"},
+                        {"date": "Friday Jul 25 2014", "outcome": "L", "gamesAboveOrBelow500": -9, "gameNumber": "103"},
+                        {"date": "Saturday Jul 26 2014", "outcome": "L", "gamesAboveOrBelow500": -10, "gameNumber": "104"},
+                        {"date": "Sunday Jul 27 2014", "outcome": "W", "gamesAboveOrBelow500": -9, "gameNumber": "105"},
+                        {"date": "Monday Jul 28 2014", "outcome": "L", "gamesAboveOrBelow500": -10, "gameNumber": "106"},
+                        {"date": "Tuesday Jul 29 2014", "outcome": "L", "gamesAboveOrBelow500": -11, "gameNumber": "107"},
+                        {"date": "Wednesday Jul 30 2014", "outcome": "L", "gamesAboveOrBelow500": -12, "gameNumber": "108"},
+                        {"date": "Friday Aug 1 2014", "outcome": "W", "gamesAboveOrBelow500": -11, "gameNumber": "109"},
+                        {"date": "Saturday Aug 2 2014", "outcome": "L", "gamesAboveOrBelow500": -12, "gameNumber": "110"},
+                        {"date": "Sunday Aug 3 2014", "outcome": "L", "gamesAboveOrBelow500": -13, "gameNumber": "111"},
+                        {"date": "Tuesday Aug 5 2014", "outcome": "L", "gamesAboveOrBelow500": -14, "gameNumber": "112"},
+                        {"date": "Wednesday Aug 6 2014", "outcome": "W", "gamesAboveOrBelow500": -13, "gameNumber": "113"},
+                        {"date": "Thursday Aug 7 2014", "outcome": "L", "gamesAboveOrBelow500": -14, "gameNumber": "114"},
+                        {"date": "Friday Aug 8 2014", "outcome": "W", "gamesAboveOrBelow500": -13, "gameNumber": "115"},
+                        {"date": "Saturday Aug 9 2014", "outcome": "L-wo", "gamesAboveOrBelow500": -14, "gameNumber": "116"},
+                        {"date": "Sunday Aug 10 2014", "outcome": "W", "gamesAboveOrBelow500": -13, "gameNumber": "117"},
+                        {"date": "Tuesday Aug 12 2014", "outcome": "W", "gamesAboveOrBelow500": -12, "gameNumber": "118"},
+                        {"date": "Wednesday Aug 13 2014", "outcome": "W", "gamesAboveOrBelow500": -11, "gameNumber": "119"},
+                        {"date": "Thursday Aug 14 2014", "outcome": "W", "gamesAboveOrBelow500": -10, "gameNumber": "120"},
+                        {"date": "Friday Aug 15 2014", "outcome": "L", "gamesAboveOrBelow500": -11, "gameNumber": "121"},
+                        {"date": "Saturday Aug 16 2014", "outcome": "W", "gamesAboveOrBelow500": -10, "gameNumber": "122"},
+                        {"date": "Sunday Aug 17 2014", "outcome": "L", "gamesAboveOrBelow500": -11, "gameNumber": "123"},
+                        {"date": "Monday Aug 18 2014", "outcome": "L", "gamesAboveOrBelow500": -12, "gameNumber": "124"},
+                        {"date": "Tuesday Aug 19 2014", "outcome": "L", "gamesAboveOrBelow500": -13, "gameNumber": "125"},
+                        {"date": "Wednesday Aug 20 2014", "outcome": "L", "gamesAboveOrBelow500": -14, "gameNumber": "126"},
+                        {"date": "Thursday Aug 21 2014", "outcome": "L", "gamesAboveOrBelow500": -15, "gameNumber": "127"},
+                        {"date": "Friday Aug 22 2014", "outcome": "L", "gamesAboveOrBelow500": -16, "gameNumber": "128"},
+                        {"date": "Saturday Aug 23 2014", "outcome": "L", "gamesAboveOrBelow500": -17, "gameNumber": "129"},
+                        {"date": "Sunday Aug 24 2014", "outcome": "L", "gamesAboveOrBelow500": -18, "gameNumber": "130"},
+                        {"date": "Monday Aug 25 2014", "outcome": "W", "gamesAboveOrBelow500": -17, "gameNumber": "131"},
+                        {"date": "Tuesday Aug 26 2014", "outcome": "W", "gamesAboveOrBelow500": -16, "gameNumber": "132"},
+                        {"date": "Wednesday Aug 27 2014", "outcome": "L", "gamesAboveOrBelow500": -17, "gameNumber": "133"},
+                        {"date": "Friday Aug 29 2014", "outcome": "W", "gamesAboveOrBelow500": -16, "gameNumber": "134"},
+                        {"date": "Saturday Aug 30 2014", "outcome": "L", "gamesAboveOrBelow500": -17, "gameNumber": "135"},
+                        {"date": "Sunday Aug 31 2014", "outcome": "W", "gamesAboveOrBelow500": -16, "gameNumber": "136"},
+                        {"date": "Monday Sep 1 2014", "outcome": "L-wo", "gamesAboveOrBelow500": -17, "gameNumber": "137"},
+                        {"date": "Tuesday Sep 2 2014", "outcome": "W", "gamesAboveOrBelow500": -16, "gameNumber": "138"},
+                        {"date": "Wednesday Sep 3 2014", "outcome": "L", "gamesAboveOrBelow500": -17, "gameNumber": "139"},
+                        {"date": "Thursday Sep 4 2014", "outcome": "L-wo", "gamesAboveOrBelow500": -18, "gameNumber": "140"},
+                        {"date": "Friday Sep 5 2014", "outcome": "W-wo", "gamesAboveOrBelow500": -17, "gameNumber": "141"},
+                        {"date": "Saturday Sep 6 2014", "outcome": "W", "gamesAboveOrBelow500": -16, "gameNumber": "142"},
+                        {"date": "Sunday Sep 7 2014", "outcome": "L", "gamesAboveOrBelow500": -17, "gameNumber": "143"},
+                        {"date": "Monday Sep 8 2014", "outcome": "L", "gamesAboveOrBelow500": -18, "gameNumber": "144"},
+                        {"date": "Tuesday Sep 9 2014", "outcome": "L", "gamesAboveOrBelow500": -19, "gameNumber": "145"},
+                        {"date": "Wednesday Sep 10 2014", "outcome": "L", "gamesAboveOrBelow500": -20, "gameNumber": "146"},
+                        {"date": "Thursday Sep 11 2014", "outcome": "W", "gamesAboveOrBelow500": -19, "gameNumber": "147"},
+                        {"date": "Friday Sep 12 2014", "outcome": "W", "gamesAboveOrBelow500": -18, "gameNumber": "148"},
+                        {"date": "Saturday Sep 13 2014", "outcome": "L", "gamesAboveOrBelow500": -19, "gameNumber": "149"},
+                        {"date": "Sunday Sep 14 2014", "outcome": "W", "gamesAboveOrBelow500": -18, "gameNumber": "150"},
+                        {"date": "Tuesday Sep 16 2014", "outcome": "L", "gamesAboveOrBelow500": -19, "gameNumber": "151"},
+                        {"date": "Wednesday Sep 17 2014", "outcome": "L", "gamesAboveOrBelow500": -20, "gameNumber": "152"},
+                        {"date": "Thursday Sep 18 2014", "outcome": "L", "gamesAboveOrBelow500": -21, "gameNumber": "153"},
+                        {"date": "Friday Sep 19 2014", "outcome": "W", "gamesAboveOrBelow500": -20, "gameNumber": "154"},
+                        {"date": "Saturday Sep 20 2014", "outcome": "L", "gamesAboveOrBelow500": -21, "gameNumber": "155"},
+                        {"date": "Sunday Sep 21 2014", "outcome": "W", "gamesAboveOrBelow500": -20, "gameNumber": "156"},
+                        {"date": "Tuesday Sep 23 2014", "outcome": "L", "gamesAboveOrBelow500": -21, "gameNumber": "157"},
+                        {"date": "Wednesday Sep 24 2014", "outcome": "W", "gamesAboveOrBelow500": -20, "gameNumber": "158"},
+                        {"date": "Thursday Sep 25 2014", "outcome": "W", "gamesAboveOrBelow500": -19, "gameNumber": "159"},
+                        {"date": "Friday Sep 26 2014", "outcome": "L", "gamesAboveOrBelow500": -20, "gameNumber": "160"},
+                        {"date": "Saturday Sep 27 2014", "outcome": "W", "gamesAboveOrBelow500": -19, "gameNumber": "161"},
+                        {"date": "Sunday Sep 28 2014", "outcome": "L", "gamesAboveOrBelow500": -20, "gameNumber": "162"}
+                    ]
+                };
+
+        multidata = [
+            {
+                team: 'BOS',
+                games: [
+                    {"date": "Saturday Mar 29 2014", "outcome": "NA", "gamesAboveOrBelow500": 0, "gameNumber": "0"},
+                    {"date": "Monday Mar 31 2014", "outcome": "L", "gamesAboveOrBelow500": -1, "gameNumber": "1"},
+                    {"date": "Wednesday Apr 2 2014", "outcome": "W", "gamesAboveOrBelow500": 0, "gameNumber": "2"},
+                    {"date": "Thursday Apr 3 2014", "outcome": "W", "gamesAboveOrBelow500": 1, "gameNumber": "3"},
+                    {"date": "Friday Apr 4 2014", "outcome": "L", "gamesAboveOrBelow500": 0, "gameNumber": "4"},
+                    {"date": "Saturday Apr 5 2014", "outcome": "L", "gamesAboveOrBelow500": -1, "gameNumber": "5"}
+                ]
+            },
+            {
+                team: 'TOR',
+                games: [
+                    {"date": "Saturday Mar 29 2014", "outcome": "NA", "gamesAboveOrBelow500": 0, "gameNumber": "0"},
+                    {"date": "Monday Mar 31 2014", "outcome": "L", "gamesAboveOrBelow500": -1, "gameNumber": "1"},
+                    {"date": "Wednesday Apr 2 2014", "outcome": "W", "gamesAboveOrBelow500": 0, "gameNumber": "2"},
+                    {"date": "Thursday Apr 3 2014", "outcome": "L", "gamesAboveOrBelow500": -1, "gameNumber": "3"},
+                    {"date": "Friday Apr 4 2014", "outcome": "L", "gamesAboveOrBelow500": -2, "gameNumber": "4"},
+                    {"date": "Sunday Apr 6 2014", "outcome": "L", "gamesAboveOrBelow500": -3, "gameNumber": "5"}
+                ]
+            },
+            {
+                team: 'NYY',
+                games: [
+                    {"date": "Saturday Mar 29 2014", "outcome": "NA", "gamesAboveOrBelow500": 0, "gameNumber": "0"},
+                    {"date": "Sunday Mar 30 2014", "outcome": "W", "gamesAboveOrBelow500": 1, "gameNumber": "1"},
+                    {"date": "Wednesday Apr 2 2014", "outcome": "W", "gamesAboveOrBelow500": 2, "gameNumber": "2"},
+                    {"date": "Thursday Apr 3 2014", "outcome": "W", "gamesAboveOrBelow500": 3, "gameNumber": "3"},
+                    {"date": "Friday Apr 4 2014", "outcome": "L", "gamesAboveOrBelow500": 2, "gameNumber": "4"},
+                    {"date": "Saturday Apr 5 2014", "outcome": "L", "gamesAboveOrBelow500": 1, "gameNumber": "5"}
+                ]
+            }
+        ];
+
+/*  Beginning of code that graphs data (one line)
+
+        //format and type the game data correctly
+        data.games.forEach(function(g) {
+            g.date = parseDate(g.date);
+            g.gamesAboveOrBelow500 = +g.gamesAboveOrBelow500;
+        });
+
+        //x and y domain, i.e. domain and range
+        x.domain(d3.extent(data.games, function(g) { return g.date; }));
+        //y.domain(d3.extent(data.games, function(g) { return g.gamesAboveOrBelow500; }));
+        y.domain([-30,30]);
+
+
+        //append x-axis
+          svg.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "translate(0," + height + ")")
+              .call(xAxis)
+            //.append("text")
+              //.attr("x", 0)
+              //.attr("dx", ".71em")
+              //.style("text-anchor", "start")
+              //.text("Date");
+             
+
+        //append y-axis
+          svg.append("g")
+              .attr("class", "y axis")
+              .call(yAxis)
+            .append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", -40)
+              .attr("x", -145)
+              .attr("dy", ".71em")
+              .style("text-anchor", "end")
+              .text("Games above or below .500");
+
+        //append the actual line
+          svg.append("path")
+              .datum(data.games)
+              .attr("class", "line")
+              .attr("d", line);
+*/
+
+/* end of code that graphs data (one line)*/
+
+
+
+/* Beginning of code that graphs multidata (three lines) */
+
+    //format and type the game data correctly
+    multidata.forEach(function(t){
+        t.games.forEach(function(g) {
+            g.date = parseDate(g.date);
+            g.gamesAboveOrBelow500 = +g.gamesAboveOrBelow500;
+        });
+    });
+
+    //console.log(multidata.length);
+
+    //x and y domain, i.e. graph domain and range
+    
+    var xMin = d3.min(multidata, function(t){
+        return d3.min(t.games, function(g){
+            return g.date;
+        });
+    });
+
+    var xMax = d3.max(multidata, function(t){
+        return d3.max(t.games, function(g){
+            return g.date;
+        });
+    });
+    
+    x.domain([xMin, xMax]);
+
+    var yMin = d3.min(multidata, function(t){
+        return d3.min(t.games, function(g){
+            return g.gamesAboveOrBelow500;
+        });
+    });
+
+    var yMax = d3.max(multidata, function(t){
+        return d3.max(t.games, function(g){
+            return g.gamesAboveOrBelow500;
+        });
+    });
+    
+    y.domain([yMin, yMax]);
+
+    //append x-axis
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+          //.append("text")
+            //.attr("x", 0)
+            //.attr("dx", ".71em")
+            //.style("text-anchor", "start")
+            //.text("Date");
+
+    //append y-axis
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+          .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", -40)
+            .attr("x", -145)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("Games above or below .500");
+
+    var team = svg.selectAll('.team')
+        .data(multidata)
+      .enter().append("g")
+        .attr("class", "team")
+
+    team.append("path")
+        .attr("class", "line")
+        .attr("d", function(d){ return line(d.games); })
+        .style("stroke", function(d){ return color(d.team); })
+
+    team.append("text")
+      .datum(function(d) { return {team: d.team, games: d.games[d.games.length - 1]}; })
+      .attr("transform", function(d) { 
+        console.log(d);
+        return "translate(" + x(d.games.date) + "," + y(d.games.gamesAboveOrBelow500) + ")"; })
+      .attr("x", 3)
+      .attr("dy", ".35em")
+      .text(function(d) { return d.team; });
+
+
+/* End of code that graphs multidata (three lines) */
+
+    </script>
